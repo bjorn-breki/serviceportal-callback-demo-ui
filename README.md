@@ -15,10 +15,10 @@
 ## Prerequisites
 
 - Node.js 20+ and npm
-- The callback API running locally (default `http://localhost:5184`,
-  see `apps/serviceprovider-callback-api/Properties/launchSettings.json` → `http` profile)
+- Access to an X-Road security server that can reach the internal
+  `serviceprovider-callback-api` and `serviceprovider-identity-api` services
 - Valid OAuth2 client credentials issued by the Service Provider identity server
-  (`https://serviceprovider-identity-api.staging.tr.is` by default)
+  (reached via X-Road)
 
 ## Getting started
 
@@ -33,13 +33,14 @@ The app will show a login screen supply `client_id`, `client_secret`
 
 Copy `.env.template` and create `.env`
 
-| Variable | Default | Used by |
-| -------- | ------- | ------- |
+| Variable | Used by |
+| -------- | ------- |
 | `VITE_API_BASE_PATH` | Axios `baseURL` |
 | `VITE_TOKEN_PATH` | Token request |
 | `VITE_DEFAULT_SCOPE` | Default scope |
-| `VITE_API_TARGET` | Path for API |
-| `VITE_AUTH_TARGET` | Path for auth API |
+| `VITE_API_TARGET` | X-Road security server URL for the callback API |
+| `VITE_AUTH_TARGET` | X-Road security server URL for the identity API |
+| `VITE_XROAD_CLIENT` | X-Road consumer subsystem identifier (sent as `X-Road-Client` header) |
 
 ## Scripts
 
