@@ -1,6 +1,8 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { readFileSync } from 'node:fs';
+import { Agent } from 'node:https';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -9,6 +11,8 @@ export default defineConfig(({ mode }) => {
     const apiTarget = env.VITE_API_TARGET;
     const authTarget = env.VITE_AUTH_TARGET;
     const xRoadClient = env.VITE_XROAD_CLIENT;
+    const clientCertificatePath = env.XROAD_CLIENT_CERT_PATH;
+    const isDev = process.env.NODE_ENV === 'development';
 
     if (!apiTarget) {
         throw new Error('VITE_API_TARGET must be set');
@@ -16,6 +20,13 @@ export default defineConfig(({ mode }) => {
     if (!authTarget) {
         throw new Error('VITE_AUTH_TARGET must be set.');
     }
+
+    const xRoadAgent = clientCertificatePath
+        ? new Agent({
+              pfx: readFileSync(clientCertificatePath),
+              passphrase: env.XROAD_CLIENT_CERT_PASSPHRASE,
+          })
+        : undefined;
 
     return {
         plugins: [react(), tailwindcss()],
@@ -25,7 +36,8 @@ export default defineConfig(({ mode }) => {
                 '/api': {
                     target: apiTarget,
                     changeOrigin: true,
-                    secure: true,
+                    secure: !isDev,
+                    agent: xRoadAgent,
                     headers: {
                         'X-Road-Client': xRoadClient,
                     },
@@ -33,7 +45,8 @@ export default defineConfig(({ mode }) => {
                 '/auth': {
                     target: authTarget,
                     changeOrigin: true,
-                    secure: true,
+                    secure: !isDev,
+                    agent: xRoadAgent,
                     rewrite: (path) => path.replace(/^\/auth/, ''),
                     headers: {
                         'X-Road-Client': xRoadClient,

@@ -41,6 +41,10 @@ Copy `.env.template` and create `.env`
 | `VITE_API_TARGET` | X-Road security server URL for the callback API |
 | `VITE_AUTH_TARGET` | X-Road security server URL for the identity API |
 | `VITE_XROAD_CLIENT` | X-Road consumer subsystem identifier (sent as `X-Road-Client` header) |
+| `XROAD_CLIENT_CERT_PATH` | Path to the PFX client certificate used for X-Road TLS authentication |
+| `XROAD_CLIENT_CERT_PASSPHRASE` | Passphrase for the PFX client certificate |
+
+The certificate settings are optional and should be used if the security server requires a certificate
 
 ## Scripts
 
@@ -57,4 +61,4 @@ scope the server actually issued, and its expiry is persisted to
 token expires. Any `401` response from the API automatically clears the stored
 auth and bounces the user back to the login screen.
 
-> ! This UI is only intended for demo use against staging. !
+> ! This UI is only intended for demo use only !
